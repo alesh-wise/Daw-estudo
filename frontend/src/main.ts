@@ -1,7 +1,7 @@
 import type { Book } from "../../shared/type";
 
 async function checkServerAlive(): Promise<void> {
-    const statusElement = document.getElementById('alive-status');
+    const statusElement = document.getElementById('status');
     if (!statusElement) { console.error('Elemento com id "status" não encontrado.'); return; }
     try {
         const response = await fetch('http://localhost:3000/api/alive');

@@ -9,6 +9,7 @@ export interface Book {
     category: BookCategory,
     stock:number,
     description?: string
+    
 }
 export type UserRole = "user" | "admin"; 
 export type PaymentStatus = "pending" | "paid" | "failed"; 

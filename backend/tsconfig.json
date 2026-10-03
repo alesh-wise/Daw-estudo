@@ -40,7 +40,9 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
+    "moduleResolution": "NodeNext",
     "moduleDetection": "force",
     "skipLibCheck": true,
-  }
+  },
+  "include": ["src/**/*", "../shared/**/*"]
 }
