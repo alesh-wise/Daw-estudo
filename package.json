@@ -1,0 +1,21 @@
+{
+  "name": "bookstore",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev:backend": "npm run dev --workspace=backend",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev": "concurrently \"npm:dev:backend\" \"npm:dev:frontend\"",
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "concurrently": "^10.0.4",
+    "typescript": "^7.0.2"
+  }
+}
