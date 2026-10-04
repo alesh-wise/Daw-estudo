@@ -6,12 +6,12 @@ const server = http.createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
         res.end();
         return;
     }
-    // TODO: Implementar a rota do Alive Check (GET /api/alive)
     if (req.url === '/api/alive' && req.method === 'GET') {
         const sampleBook: Book = {
             id: 1,

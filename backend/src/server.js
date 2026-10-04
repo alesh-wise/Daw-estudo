@@ -10,7 +10,6 @@ const server = http.createServer((req, res) => {
         res.end();
         return;
     }
-    // TODO: Implementar a rota do Alive Check (GET /api/alive)
     if (req.url === '/api/alive' && req.method === 'GET') {
         const sampleBook = {
             id: 1,
@@ -18,8 +17,7 @@ const server = http.createServer((req, res) => {
             author: "Goat Nenad",
             price: 15.99,
             category: BookCategory.Fiction,
-            stock: 10,
-            description: 'Ele sabeu'
+            stock: 10
         };
         res.writeHead(200, {
             'Content.Type': 'application.json'
