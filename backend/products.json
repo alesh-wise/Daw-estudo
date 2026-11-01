@@ -1,0 +1,29 @@
+[
+  {
+    "id": "ebk-101",
+    "name": "Introdução à Web",
+    "supplier": "Noélia Correia",
+    "price": 29.9,
+    "category": 0,
+    "stock": 50,
+    "description": "A bíblia inicial para compreender arquiteturas Web modernas."
+  },
+  {
+    "id": "ebk-102",
+    "name": "Como Programar em TypeScript",
+    "supplier": "Prof. Web",
+    "price": 34.5,
+    "category": 0,
+    "stock": 12,
+    "description": "Tipagem estrita e boas práticas de orientação a objetos."
+  },
+  {
+    "id": "ebk-103",
+    "name": "História da Internet",
+    "supplier": "Alan Turing",
+    "price": 19.99,
+    "category": 0,
+    "stock": 5,
+    "description": "Uma viagem fascinante desde os primórdios da computação."
+  }
+]
