@@ -1,23 +1,66 @@
 <!DOCTYPE html>
 <html lang="pt">
 
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Store — Alive Check</title>
+    <title>Food Store</title>
 </head>
 
 <body>
-    <h1>DAW – Book Store </h1>
-    <div id="alive-status"> A carregar estado do servidor...</div>
-    <!-- TODO: Criar a div com id="status" contendo a mensagem inicial "A
-carregar o estado do servidor..." -->
-    <script type="module" src="src/main.ts"> </script>
-    <!-- TODO: Incluir o elemento script com type="module" a apontar para
-"/src/main.ts" -->
-    <div id="books-catalog">
-    </div>
-    <div id="live-notifications"> </div>
+    <h1>DAW - Food Store </h1>
+    <script type="module" src="src/main.js"> </script>
+    <section>
+        <h2>Adicionar Novo Produto ao Catálogo</h2>
+
+        <form id="product-form">
+            <div>
+                <label for="name">Name:</label><br />
+                <input type="text" id="name" name="name" required />
+            </div>
+
+            <div>
+                <label for="supplier">Supplier:</label><br />
+                <input type="text" id="supplier" name="supplier" required />
+            </div>
+
+            <div>
+                <label for="price">Preço (€):</label><br />
+                <input type="number" id="price" name="price" step="0.01" min="0" required />
+            </div>
+
+            <div>
+                <label for="ProductsCategory">Categoria de Produtos:</label><br />
+                <select id="ProductsCategory" name="ProductsCategory" required>
+
+                    <option value="" disabled selected>
+                        Seleciona uma categoria
+                    </option>
+                    <option value="Alcoholic">Alcoholic</option>
+                    <option value="NonAlcoholic">NonAlcoholic</option>
+                    <option value="Fresh">Fresh</option>
+                    <option value="Frozen">Frozen</option>
+                    <option value="Pantry">Pantry</option>
+                    <option value="PrePreparedMeals">PrePreparedMeals</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="stock">Stock Disponível:</label><br />
+                <input type="number" id="stock" name="stock" min="0" required />
+            </div>
+
+            <div>
+                <label for="description">Descrição do Produto:</label><br />
+                <textarea id="description" name="description" rows="3" cols="30"></textarea>
+            </div>
+
+            <br />
+
+            <button type="submit">Adicionar Produto</button>
+        </form>
+    </section>
 </body>
 
 </html>

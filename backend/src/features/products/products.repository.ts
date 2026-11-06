@@ -59,4 +59,14 @@ export class ProductRepository {
         // TODO: Intercetar o erro caso o ficheiro não exista (error.code === 'ENOENT')
         // TODO: Se erro, criar Products.json usando fs.promises.writeFile com o conteúdo de this.seedProducts formatado em JSON, e devolver this.seedProducts
     }
+
+    public async saveAll(products: Product[]) {
+        try{
+            const data = JSON.stringify(products, null, 2)
+            await fs.writeFile(this.filePath, data,'utf-8')
+        }
+        catch(error: any){
+            throw error
+        }
+    }
 }

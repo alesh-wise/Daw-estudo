@@ -25,5 +25,14 @@
     "category": 0,
     "stock": 5,
     "description": "Uma viagem fascinante desde os primórdios da computação."
+  },
+  {
+    "id": "1793912914758",
+    "name": "lol",
+    "supplier": "lmao",
+    "price": 4,
+    "stock": 10,
+    "category": null,
+    "description": ""
   }
 ]
