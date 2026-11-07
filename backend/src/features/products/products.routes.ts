@@ -1,9 +1,9 @@
 import { Router, Request, Response } from 'express';
-import { ProductRepository } from './products.repository.js';
+import { ProductsRepository } from './products.repository.js';
 import { ProductCategory } from '../../../../shared/types.js';
 import type { Product } from '../../../../shared/types.js';
 const router = Router();
-const productRepo = new ProductRepository();
+const productRepo = new ProductsRepository();
 // NOTA: Vamos buscar/escrever todo o repositório de livros aquando damanipulação
 // TODO: GET /api/books para listar todo o catálogo de livros com status 200 (tratar erros com status 500)... como feito no Lab 2
 router.get("/products", async (req: Request, res: Response) => {
@@ -40,7 +40,6 @@ router.post("/products", async (req: Request, res: Response) => {
         if (!name || !supplier || price === undefined || stock === undefined) {
             return res.status(400).json({ 'message': "Faltam campos obrigatorios" })
         }
-        const products = await productRepo.getAll()
         const product: Product = {
             id: Date.now().toString(),
             name: name,
@@ -51,8 +50,7 @@ router.post("/products", async (req: Request, res: Response) => {
             description: description ?? ""
         }
 
-        products.push(product)
-        await productRepo.saveAll(products)
+        await productRepo.create(product)
 
         res.status(201).json(product)
 
@@ -68,22 +66,15 @@ router.put("/products/:id", async (req: Request, res: Response) => {
         const id = req.params.id
         const { name, supplier, price, category, stock, description } = req.body;
         const products = await productRepo.getAll();
+        if(!products){
+            return res.status(404).json({'message': "Não existem produtos"})
+        }
         const index = products.findIndex(p => p.id === id);
         const existing = products[index];
         if (index === -1 || !existing) {
             return res.status(404).json({ 'message': "Id invalido" })
         }
-        products[index] = {
-            ...existing,
-            id: existing.id,
-            name: name ?? existing.name,
-            supplier: supplier ?? existing.supplier,
-            price: price !== undefined ? Number(price) : existing.price,
-            category: (category ?? existing.category) as ProductCategory,
-            stock: stock !== undefined ? Number(stock) : existing.stock,
-            description: description !== undefined ? description : existing.description
-        };
-        await productRepo.saveAll(products);
+        await productRepo.update(existing.id,existing);
         res.status(200).json(products[index]);
     }
     catch (error) {
@@ -104,14 +95,11 @@ router.delete("/products", async (req: Request,res: Response) => {
         }
 
         const productWanted = products[productIndex];
-
+        
         if (!productWanted) {
             return res.status(404).json({ message: 'Não existe livro associado ao id' });
         }
-
-        products.splice(productIndex, 1);
-
-        await productRepo.saveAll(products);
+        await productRepo.delete(productWanted.id)
         return res.status(204).send();
     }
     catch (error) {

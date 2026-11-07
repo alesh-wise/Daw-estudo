@@ -1,72 +1,99 @@
-import { promises as fs } from 'node:fs';
+import nedb from '@seald-io/nedb'
+import DataStore from '@seald-io/nedb'
 import path from 'node:path';
 import type { Product } from '../../../../shared/types.js';
 import { ProductCategory } from '../../../../shared/types.js';
-export class ProductRepository {
-    private readonly filePath = path.join(process.cwd(), 'products.json');
-    // Catálogo inicial para seeding
-    private readonly seedProducts: Product[] = [
-        {
-            id: "ebk-101",
-            name: "Introdução à Web",
-            supplier: "Noélia Correia",
-            price: 29.90,
-            category: ProductCategory.Frozen,
-            stock: 50,
-            description: "A bíblia inicial para compreender arquiteturas Web modernas."
-        },
-        {
-            id: "ebk-102",
-            name: "Como Programar em TypeScript",
-            supplier: "Prof. Web",
-            price: 34.50,
-            category: ProductCategory.Frozen,
-            stock: 12,
-            description: "Tipagem estrita e boas práticas de orientação a objetos."
-        },
-        {
-            id: "ebk-103",
-            name: "História da Internet",
-            supplier: "Alan Turing",
-            price: 19.99,
-            category: ProductCategory.Frozen,
-            stock: 5,
-            description: "Uma viagem fascinante desde os primórdios da computação."
-        }
+
+type Datastore = InstanceType<typeof DataStore>
+
+export class ProductsRepository {
+    private readonly db: Datastore;
+    private readonly seedBooks: Product[] = [
+        // ...Estrutura de livros de teste definida nos laboratórios anteriores
     ];
-    /**
-    * Lê todos os livros armazenados em Products.json de forma assíncrona.
-    * Se o ficheiro não existir (erro ENOENT), cria-o com os dados de
-   seedProducts.
-    */
-
-    public async getAll(): Promise<Product[]> {
-        try {
-            // TODO: Ler o ficheiro local em 'this.filePath' usando fs.promises.readFile com codificação 'utf-8'
-            const fileData = await fs.readFile(this.filePath, 'utf-8')
-            // TODO: Converter o texto JSON lido para um array de objetos Product[] e devolvê-lo
-            const produtos: Product[] = JSON.parse(fileData);
-            return produtos
+    constructor() {
+        // TODO: Inicializar a instância do Datastore apontando para o ficheiro 'books.db' com autoload: true
+        this.db = new DataStore({ filename: path.join(process.cwd(), 'products.db'), autoload: true })
+        // TODO: Iniciar a sementeira automatizada de dados chamando método adicional this.seedIfNeeded()
+        this.seedIfNeeded().catch(err => { console.error("Erro ao semear dados") })
+    }
+    private async seedIfNeeded(): Promise<void> {
+        // TODO: Verificar a contagem de documentos ou efetuar db.find({})
+        const count = await new Promise<Number>((resolve, reject) => {
+            this.db.count({}, (err: Error | null, docs: any) => {
+                if (err) return reject(err);
+                resolve(docs);
+            })
+        })
+        // TODO: Se a coleção estiver vazia, inserir os seedBooks usando db.insert
+        if (count === 0) {
+            await new Promise<void>((resolve, reject) => {
+                this.db.insert(this.seedBooks.map(p => { return { ...p, _id: p.id } }), (err) => {
+                    if (err) { return reject(err) }
+                    resolve()
+                })
+            })
         }
-        catch (error: any) {
-            if (error.code === 'ENOENT') {
-                await fs.writeFile(this.filePath, JSON.stringify(this.seedProducts, null, 2), 'utf-8');
-                return this.seedProducts;
-            }
-            throw error;
-
-        }
-        // TODO: Intercetar o erro caso o ficheiro não exista (error.code === 'ENOENT')
-        // TODO: Se erro, criar Products.json usando fs.promises.writeFile com o conteúdo de this.seedProducts formatado em JSON, e devolver this.seedProducts
     }
 
-    public async saveAll(products: Product[]) {
-        try{
-            const data = JSON.stringify(products, null, 2)
-            await fs.writeFile(this.filePath, data,'utf-8')
-        }
-        catch(error: any){
-            throw error
-        }
+    public async getAll(): Promise<Product[]> {
+        // TODO: Wrap do método db.find({}, ...) numa Promise compatível com async/await
+        return new Promise<Product[]>((resolve, reject) => {
+            this.db.find({}, (err: Error | null, docs: any) => {
+                if (err) { return reject(err) }
+                resolve(docs)
+            })
+        })
+    }
+
+    public async getById(id: string): Promise<Product | null> {
+        // TODO: Wrap do método db.findOne({ _id: id }, ...) ou pesquisa equivalente numa Promise
+        return new Promise<Product>((resolve, reject) => {
+            this.db.findOne({ _id: id }, (err: Error | null, docs: any) => {
+                if (err) { return reject(err) }
+                resolve(docs)
+            })
+        })
+    }
+    public async create(product: Product): Promise<Product> {
+        const docToInsert = {
+            ...product,
+            _id: product.id || `ebk-${Date.now()}` // Mapeia o id do domínio para a chave primária NoSQL
+        };
+
+        return new Promise<Product>((resolve, reject) => {
+            this.db.insert(docToInsert, (err: Error | null, newDoc: any) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+                resolve({ ...newDoc, id: newDoc._id } as Product);
+            });
+        });
+    }
+
+    public async update(id: string, ProductData: Partial<Product>): Promise<Product |
+        null> {
+        // TODO: Wrap do método db.update({ _id: id }, { $set: bookData }, {}, ...) numa Promise
+        return new Promise<Product | null>((resolve, reject) => {
+            this.db.update({ _id: id }, { $set: ProductData }, { returnUpdatedDocs: true }, (err: Error | null, numReplaced: number, updatedDoc: any) => {
+                if (err) reject(err);
+                else if (numReplaced === 0) { resolve(null) }
+                else {
+                    const { _id, ...rest } = updatedDoc as any;
+                    resolve({ id: _id, ...rest } as Product)
+                }
+            })
+        })
+    }
+
+    public async delete(id: string): Promise<boolean> {
+        // TODO: Wrap do método db.remove({ _id: id }, {}, ...) numa Promise e devolver true se removido com sucesso
+        return new Promise<boolean>((resolve, reject) => {
+            this.db.remove({ _id: id }, (err: Error | null, numRemoved: number) => {
+                if (err) reject(err);
+                else resolve(numRemoved > 0)
+            })
+        })
     }
 }
