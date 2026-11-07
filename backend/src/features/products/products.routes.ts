@@ -2,6 +2,8 @@ import { Router, Request, Response } from 'express';
 import { ProductsRepository } from './products.repository.js';
 import { ProductCategory } from '../../../../shared/types.js';
 import type { Product } from '../../../../shared/types.js';
+import { validateSchema } from '../../middlewares/validation.middleware.js';
+import { productValidationSchema } from './products.schema.js';
 const router = Router();
 const productRepo = new ProductsRepository();
 // NOTA: Vamos buscar/escrever todo o repositório de livros aquando damanipulação
@@ -33,7 +35,7 @@ router.get("/products/:id", async (req: Request, res: Response) => {
 })
 
 // TODO: POST /api/books para criar um livro no catálogo com validação de campos obrigatórios; status 201 Created, 400 se campos em falta e 500 se erro de escrita
-router.post("/products", async (req: Request, res: Response) => {
+router.post("/products", validateSchema(productValidationSchema),async (req: Request, res: Response) => {
     try {
         const { name, supplier, price, stock, category, description } = req.body;
 
@@ -61,7 +63,7 @@ router.post("/products", async (req: Request, res: Response) => {
 })
 
 // TODO: PUT /api/books/:id para atualizar dados de um livro existente.
-router.put("/products/:id", async (req: Request, res: Response) => {
+router.put("/products/:id",validateSchema(productValidationSchema), async (req: Request, res: Response) => {
     try {
         const id = req.params.id
         const { name, supplier, price, category, stock, description } = req.body;
@@ -74,8 +76,17 @@ router.put("/products/:id", async (req: Request, res: Response) => {
         if (index === -1 || !existing) {
             return res.status(404).json({ 'message': "Id invalido" })
         }
-        await productRepo.update(existing.id,existing);
-        res.status(200).json(products[index]);
+        const newproduct = {
+            ...existing,
+            name: name ?? existing.name,
+            supplier: supplier ?? existing.supplier,
+            price: price ?? existing.price,
+            stock: stock ?? existing.stock,
+            category: category ?? existing.category,
+            description: description ?? existing.description
+        }
+        await productRepo.update(existing.id,newproduct);
+        res.status(200).json(newproduct);
     }
     catch (error) {
         res.status(500).json({ 'message': "Erro ao conectar com o servidor" })
