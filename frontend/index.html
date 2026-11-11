@@ -1,66 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt">
-
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Food Store</title>
-</head>
+  </head>
 
-<body>
-    <h1>DAW - Food Store </h1>
-    <script type="module" src="src/main.js"> </script>
+  <body>
+    <h1>DAW - Food Store</h1>
+    <p id="alive-status"></p>
+    <script type="module" src="src/main.js"></script>
     <section>
-        <h2>Adicionar Novo Produto ao Catálogo</h2>
+      <h2>Adicionar Novo Produto ao Catálogo</h2>
 
-        <form id="product-form">
-            <div>
-                <label for="name">Name:</label><br />
-                <input type="text" id="name" name="name" required />
-            </div>
+      <form id="product-form">
+        <div>
+          <label for="name">Name:</label><br />
+          <input type="text" id="name" name="name" required />
+        </div>
 
-            <div>
-                <label for="supplier">Supplier:</label><br />
-                <input type="text" id="supplier" name="supplier" required />
-            </div>
+        <div>
+          <label for="supplier">Supplier:</label><br />
+          <input type="text" id="supplier" name="supplier" required />
+        </div>
 
-            <div>
-                <label for="price">Preço (€):</label><br />
-                <input type="number" id="price" name="price" step="0.01" min="0" required />
-            </div>
+        <div>
+          <label for="price">Preço (€):</label><br />
+          <input
+            type="number"
+            id="price"
+            name="price"
+            step="0.01"
+            min="0"
+            required
+          />
+        </div>
 
-            <div>
-                <label for="ProductsCategory">Categoria de Produtos:</label><br />
-                <select id="ProductsCategory" name="ProductsCategory" required>
+        <div>
+          <label for="ProductsCategory">Categoria de Produtos:</label><br />
+          <select id="ProductsCategory" name="ProductsCategory" required>
+            <option value="" disabled selected>Seleciona uma categoria</option>
+            <option value="0">Alcoholic</option>
+            <option value="1">NonAlcoholic</option>
+            <option value="2">Fresh</option>
+            <option value="3">Frozen</option>
+            <option value="4">Pantry</option>
+            <option value="5">PrePreparedMeals</option>
+          </select>
+        </div>
 
-                    <option value="" disabled selected>
-                        Seleciona uma categoria
-                    </option>
-                    <option value="Alcoholic">Alcoholic</option>
-                    <option value="NonAlcoholic">NonAlcoholic</option>
-                    <option value="Fresh">Fresh</option>
-                    <option value="Frozen">Frozen</option>
-                    <option value="Pantry">Pantry</option>
-                    <option value="PrePreparedMeals">PrePreparedMeals</option>
-                </select>
-            </div>
+        <div>
+          <label for="stock">Stock Disponível:</label><br />
+          <input type="number" id="stock" name="stock" min="0" required />
+        </div>
 
-            <div>
-                <label for="stock">Stock Disponível:</label><br />
-                <input type="number" id="stock" name="stock" min="0" required />
-            </div>
+        <div>
+          <label for="description">Descrição do Produto:</label><br />
+          <textarea
+            id="description"
+            name="description"
+            rows="3"
+            cols="30"
+          ></textarea>
+        </div>
 
-            <div>
-                <label for="description">Descrição do Produto:</label><br />
-                <textarea id="description" name="description" rows="3" cols="30"></textarea>
-            </div>
+        <br />
 
-            <br />
-
-            <button type="submit">Adicionar Produto</button>
-        </form>
+        <button type="submit">Adicionar Produto</button>
+      </form>
     </section>
-</body>
 
+    <section>
+      <h2>Catálogo de Produtos</h2>
+      <div id="product-catalog"></div>
+    </section>
+
+    <section>
+      <h2>Notificações em Tempo Real</h2>
+      <div id="live-notifications"></div>
+    </section>
+  </body>
 </html>

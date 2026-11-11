@@ -1,7 +1,11 @@
 
 export enum ProductCategory{
+    Alcoholic,
+    NonAlcoholic,
+    Fresh,
     Frozen,
-    Fresh
+    Pantry,
+    PrePreparedMeals
 }
 
 export interface Product{
